@@ -8,24 +8,28 @@
 
     header('Content-type:text/json');
    
-    //文件本身是UTF-8，直接输出语句是UTF-8格式，函数、数据库输出是GBK格式
+    //文件本身是UTF-8，直接输出语句是UTF-8格式，函数、数据库返回的值则是是GBK格式
 
+    /*apikey设置和验证*/
     $api_pass='qwerty!!!';
 
     $api_key=$_GET['apikey'];
-
+    
+    /*3次md5加密*/
     $option=strcmp(md5(md5(md5($api_pass))),$api_key);
     
     if ($option!==0){
-
+        
         echo "Illegal Access!";
         exit();
+        
     } 
 
 
-
+    /*接收参数*/
     $action=$_GET['action'];
     
+    /*接收参数*/
     switch($action) {
 
         /*  根据用户名获取用户信息  */
@@ -61,6 +65,7 @@
 
                 $result[]    = odbc_result($rs, "phone");
 
+                /*用户名唯一，不用数组*/
                 //array_push($result, array('username' => $username,'name' => $name,'mobile' => $mobile,'phone' => $phone));
                
                 if (!$result){
@@ -69,10 +74,8 @@
 
                 }
             
-                //echo json_encode($result);
                 echo json_encode($result);
                 
-            
             }catch(Exception $e){
                 
                 echo $e->getMessage();
@@ -122,7 +125,6 @@
                         array_push($result, array('username' => $username,'name' => $name,'mobile' => $mobile,'phone' => $phone));
                     }
                    
-
                     /*if (!$result){
 
                         throw new Exception('error');
@@ -182,7 +184,6 @@
 
                 }
 
-
                 if (!$result){
 
                     throw new Exception('error!');
@@ -234,7 +235,6 @@
 
                 }
 
-
                 if (!$result){
 
                     throw new Exception('error');
@@ -278,10 +278,10 @@
 
                 //转换编码
                 $result=iconv('GBK', 'UTF-8', $result);
-                //
+                
+                //返回结果是xml字符串
                 $result=simplexml_load_string($result); 
                 
-                   
                 if (!$result){
 
                     throw new Exception('error');
@@ -293,7 +293,7 @@
             
             }catch(Exception $e){
                 
-                echo $e->getMessage();
+                echo iconv('GBK', 'UTF-8',$e->getMessage());
                 
             }   
                     
@@ -303,6 +303,7 @@
 
         /*  从群中删除指定的用户 */
         case "del_group_user":
+            
             try {
 
                 $username=$_GET['username'];
@@ -323,7 +324,7 @@
 
                     }
 
-
+                //api返回结果为空，自定义返回字符串
                 $result="ok";
                 echo $result;
 
@@ -340,6 +341,7 @@
 
         /*  添加用户到群 */
         case "add_group_user":
+            
             try {
 
                 $username=$_GET['username'];
@@ -359,7 +361,7 @@
                         throw new Exception('error');
 
                     }
-
+                //api返回结果为空，自定义返回字符串
                 $result="ok";
                 echo $result;
                 
@@ -376,6 +378,7 @@
 
         /*  添加群 */
         case "add_group":
+            
             try {
 
                 $groupname=$_GET['groupname'];
@@ -393,8 +396,8 @@
                         throw new Exception('error');
 
                     }
-
-
+                    
+                //api返回结果为空，自定义返回字符串
                 $result="ok";
                 echo $result;
                 
@@ -412,6 +415,7 @@
 
         /*  删除群 */
         case "del_group":
+            
             try {
 
                 $groupname=$_GET['groupname'];
@@ -439,6 +443,7 @@
 
                     }
 
+                //api返回结果为空，自定义返回字符串
                 $result="ok";
                 echo $result;
                 
@@ -456,6 +461,7 @@
 
         /*  修改群 */
         case "edit_group":
+            
             try {
 
                 $old_groupname=$_GET['old_groupname'];
@@ -488,6 +494,7 @@
 
                     }
 
+                //api返回结果为空，自定义返回字符串
                 $result="ok";
                 echo $result;
                 
@@ -507,6 +514,7 @@
 
         /*  获取组织架构 */
         case "get_org":
+            
             try {
 
                 //require_once "IPLimit.php";
@@ -557,55 +565,9 @@
 
 
 
-
-        //*  根据部门名称获取部门所有用户 */
-        /*case "get_dept_all_user":
-            try {
-    
-                $deptname=$_GET['deptname'];
-
-                $deptname_gbk=iconv("UTF-8", "GBK", $deptname);
-
-                $RTXObj=new COM('RTXSAPIRootObj.RTXSAPIRootObj')or die('not found the COMOBJ');
-
-                $DisGroupManager=$RTXObj->DeptManager;
-
-                //根据部门名称查找所有用户
-
-                $result=$DisGroupManager->GetDeptUsers($deptname_gbk);
-
-        
-                //转换编码
-                $result=iconv('GBK', 'UTF-8', $result);
-                //
-                $result=simplexml_load_string($result); 
-
-
-                if (!$result){
-
-                        throw new Exception('error');
-
-                    }
-
-                
-                $result=json_encode($result);
-
-                echo $result;
-                
-
-            }catch(Exception $e){
-            
-                echo iconv('GBK', 'UTF-8',$e->getMessage());
-            
-            }  
-
-        break;*/
-
-
-
-
         /*  添加新用户并设置到部门 */
         case "add_user":
+            
             try {
     
                 $username=$_GET['username'];
@@ -629,7 +591,6 @@
 
                 $authtype="0";
 
-
                 //添加用户
                 $RTXObj=new COM('RTXSAPIRootObj.RTXSAPIRootObj')or die('not found the COMOBJ');
 
@@ -642,7 +603,6 @@
                 //[in]bstrPwd 用户密码
                 $result=$AddUserBase->SetUserPwd($username_gbk,$password);
 
-
                 //设置用户简单资料
                 //[in]bstrUserName 用户名
                 //[in]bstrName 用户姓名
@@ -653,7 +613,6 @@
                 //[in]lAuthType 用户认证类型
                 //所有参数一定要以变量形式传递
                 $result=$AddUserBase->SetUserBasicInfo($username_gbk,$name_gbk,$sex,$mobile,$mail,$phone,$authtype);
-
 
                 //添加用户到部门
                 $MoveUserToDept=$RTXObj->DeptManager;
@@ -666,10 +625,11 @@
                 //[in] bIsCopy  是否采用拷贝的方式。如采用拷贝方式则用户将在原来的部门中保留，否则用户将从原来所在的部门中删除。 
                 $result=$MoveUserToDept->AddUserToDept($username_gbk,$soudeptname,$deptname_gbk,False);
 
+                //api返回结果为空，自定义返回字符串
+                $result="ok";
                 echo $result;
 
                 
-
             }catch(Exception $e){
 
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
@@ -677,15 +637,14 @@
             }
 
             
-        
         break;
-
 
 
 
 
         /*  根据部门名称查看部门所有用户 */
         case "get_dept_user_list":
+            
             try {
 
                 //require_once "IPLimit.php";
@@ -723,7 +682,8 @@
 
                 }
 
-
+                /*例外一种方法*/
+                
                 /*//创建根对象
                 $RTXObj=new COM('RTXSAPIRootObj.RTXSAPIRootObj')or die('not found the COMOBJ');
 
@@ -738,7 +698,6 @@
                 
                 $result=simplexml_load_string($result); */
                 
-                   
                 if (!$result){
 
                     throw new Exception('error');
@@ -746,8 +705,6 @@
                 }
             
                 echo json_encode($result);
-                //echo $result;
-            
                 
             
             }catch(Exception $e){
@@ -806,9 +763,8 @@
                 }
 
 
-                //转换编码
-                $result=iconv('GBK', 'UTF-8', $result);
-
+                //api返回结果为空，自定义返回字符串
+                $result="ok";
                 echo $result;
 
             
@@ -846,9 +802,8 @@
 
                 }
 
-                //转换编码
-                $result=iconv('GBK', 'UTF-8', $result);
-
+                //api返回结果为空，自定义返回字符串
+                $result="ok";
                 echo $result;
 
             
@@ -860,7 +815,6 @@
 
 
         break;
-
 
 
 
@@ -876,8 +830,6 @@
 
                 $password=$_GET['password'];
 
-
-
                 $RTXObj=new COM('RTXSAPIRootObj.RTXSAPIRootObj')or die('not found the COMOBJ');
 
                 $ChangeUser=$RTXObj->UserManager;
@@ -887,16 +839,14 @@
                 //[in]bstrPwd 用户密码
                 $result=$ChangeUser->SetUserPwd($username_gbk,$password);
 
-
                 if ($result){
 
                     throw new Exception('error');
 
                 }
 
-                //转换编码
-                //$result=iconv('GBK', 'UTF-8', $result);
-
+                //api返回结果为空，自定义返回字符串
+                $result="ok";
                 echo $result;
 
             
@@ -912,7 +862,7 @@
 
 
         
-
+        
         /*  发送通知  */
         case "send_notify":
 
@@ -1043,6 +993,7 @@
 
             /*  判断结果是否出错  */
             $errstr = $php_errormsg;
+            
             if(strcmp($nullstr, $errstr) == 0)
             {
                     echo "ok";
