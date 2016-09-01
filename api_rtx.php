@@ -8,7 +8,7 @@
 
     header('Content-type:text/json');
    
-    //文件本身是UTF-8，直接输出语句是UTF-8格式，函数、数据库返回的值则是是GBK格式
+    //文件本身是UTF-8，直接输出语句是UTF-8格式，函数、数据库返回的值则是GBK格式
 
     /*apikey设置和验证*/
     $api_pass='qwerty!!!';
