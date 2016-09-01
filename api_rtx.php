@@ -47,7 +47,7 @@
 
                 $conn = @odbc_connect($dsn, "", "", SQL_CUR_USE_ODBC);
 
-                $sql = "select username,name,mobile,phone from Sys_user where username='$q_username' and (AccountState<>1 or AccountState is null)";
+                $sql = "select username,name,mobile,phone from Sys_user where (username='$q_username') and (AccountState<>1 or AccountState is null)";
 
                 $rs = @odbc_do($conn, $sql);
 
@@ -81,6 +81,7 @@
                 echo $e->getMessage();
                 
             }   
+ 
             
         break;
 
@@ -102,7 +103,7 @@
 
                     $conn = @odbc_connect($dsn, "", "", SQL_CUR_USE_ODBC);
 
-                    $sql = "select username,name,mobile,phone from Sys_user where name='$q_name' and (AccountState<>1 or AccountState is null)";
+                    $sql = "select username,name,mobile,phone from Sys_user where (name='$q_name') and (AccountState<>1 or AccountState is null)";
 
                     $rs = @odbc_do($conn, $sql);
 
@@ -141,9 +142,9 @@
                 echo $e->getMessage();
                 
             }   
-            
-        break;
+ 
 
+        break;
 
 
 
@@ -158,7 +159,7 @@
 
                 $conn = @odbc_connect($dsn, "", "", SQL_CUR_USE_ODBC);
 
-                $sql = "select id, username,name,mobile from Sys_user where AccountState<>1 or AccountState is null order by name ASC";
+                $sql = "select id, username,name,mobile from Sys_user where (AccountState<>1 or AccountState is null) order by name ASC";
 
                 $rs = @odbc_do($conn, $sql);
 
@@ -200,6 +201,7 @@
                 echo $e->getMessage();
                 
             }
+
             
         break;
 
@@ -251,9 +253,9 @@
                 echo $e->getMessage();
                 
             }
-            
-        break;
+  
 
+        break;
 
 
 
@@ -296,8 +298,10 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
                 
             }   
-                    
+  
+
         break;
+
 
 
 
@@ -335,7 +339,9 @@
             
             }  
 
+
         break;
+
 
 
 
@@ -372,7 +378,9 @@
             
             }  
 
+
         break;
+
 
 
 
@@ -407,6 +415,7 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
             
             }  
+
 
         break;
 
@@ -453,6 +462,7 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
             
             }  
+
 
         break;
 
@@ -505,9 +515,8 @@
             
             }  
 
+
         break;
-
-
 
 
 
@@ -559,6 +568,7 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
             
             }  
+
 
         break;
 
@@ -625,6 +635,7 @@
                 //[in] bIsCopy  是否采用拷贝的方式。如采用拷贝方式则用户将在原来的部门中保留，否则用户将从原来所在的部门中删除。 
                 $result=$MoveUserToDept->AddUserToDept($username_gbk,$soudeptname,$deptname_gbk,False);
 
+
                 //api返回结果为空，自定义返回字符串
                 $result="ok";
                 echo $result;
@@ -682,7 +693,7 @@
 
                 }
 
-                /*例外一种方法*/
+                /*使用API 例外一种方法*/
                 
                 /*//创建根对象
                 $RTXObj=new COM('RTXSAPIRootObj.RTXSAPIRootObj')or die('not found the COMOBJ');
@@ -714,7 +725,6 @@
             }   
 
             
-        
         break;
 
 
@@ -861,8 +871,7 @@
 
 
 
-        
-        
+               
         /*  发送通知  */
         case "send_notify":
 
