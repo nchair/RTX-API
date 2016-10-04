@@ -8,7 +8,7 @@
 
     header('Content-type:text/json');
    
-    //文件本身是UTF-8，直接输出语句是UTF-8格式，函数、数据库返回的值则是GBK格式
+    //文件本身是UTF-8，直接输出语句是UTF-8格式，函数、数据库返回的值则是是GBK格式
 
     /*apikey设置和验证*/
     $api_pass='qwerty!!!';
@@ -47,7 +47,7 @@
 
                 $conn = @odbc_connect($dsn, "", "", SQL_CUR_USE_ODBC);
 
-                $sql = "select username,name,mobile,phone from Sys_user where (username='$q_username') and (AccountState<>1 or AccountState is null)";
+                $sql = "select username,name,mobile,phone from Sys_user where username='$q_username' and (AccountState<>1 or AccountState is null)";
 
                 $rs = @odbc_do($conn, $sql);
 
@@ -81,7 +81,6 @@
                 echo $e->getMessage();
                 
             }   
- 
             
         break;
 
@@ -103,7 +102,7 @@
 
                     $conn = @odbc_connect($dsn, "", "", SQL_CUR_USE_ODBC);
 
-                    $sql = "select username,name,mobile,phone from Sys_user where (name='$q_name') and (AccountState<>1 or AccountState is null)";
+                    $sql = "select username,name,mobile,phone from Sys_user where name='$q_name' and (AccountState<>1 or AccountState is null)";
 
                     $rs = @odbc_do($conn, $sql);
 
@@ -142,9 +141,9 @@
                 echo $e->getMessage();
                 
             }   
- 
-
+            
         break;
+
 
 
 
@@ -159,7 +158,7 @@
 
                 $conn = @odbc_connect($dsn, "", "", SQL_CUR_USE_ODBC);
 
-                $sql = "select id, username,name,mobile from Sys_user where (AccountState<>1 or AccountState is null) order by name ASC";
+                $sql = "select id, username,name,mobile from Sys_user where AccountState<>1 or AccountState is null order by name ASC";
 
                 $rs = @odbc_do($conn, $sql);
 
@@ -201,7 +200,6 @@
                 echo $e->getMessage();
                 
             }
-
             
         break;
 
@@ -253,9 +251,9 @@
                 echo $e->getMessage();
                 
             }
-  
-
+            
         break;
+
 
 
 
@@ -298,10 +296,8 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
                 
             }   
-  
-
+                    
         break;
-
 
 
 
@@ -339,9 +335,7 @@
             
             }  
 
-
         break;
-
 
 
 
@@ -378,9 +372,7 @@
             
             }  
 
-
         break;
-
 
 
 
@@ -415,7 +407,6 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
             
             }  
-
 
         break;
 
@@ -462,7 +453,6 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
             
             }  
-
 
         break;
 
@@ -515,8 +505,9 @@
             
             }  
 
-
         break;
+
+
 
 
 
@@ -568,7 +559,6 @@
                 echo iconv('GBK', 'UTF-8',$e->getMessage());
             
             }  
-
 
         break;
 
@@ -635,7 +625,6 @@
                 //[in] bIsCopy  是否采用拷贝的方式。如采用拷贝方式则用户将在原来的部门中保留，否则用户将从原来所在的部门中删除。 
                 $result=$MoveUserToDept->AddUserToDept($username_gbk,$soudeptname,$deptname_gbk,False);
 
-
                 //api返回结果为空，自定义返回字符串
                 $result="ok";
                 echo $result;
@@ -673,6 +662,7 @@
 
                 $rs = @odbc_do($conn, $sql);
 
+
                 $result = array();
 
                 while (odbc_fetch_row($rs)) {
@@ -693,7 +683,7 @@
 
                 }
 
-                /*使用API 例外一种方法*/
+                /*例外一种方法*/
                 
                 /*//创建根对象
                 $RTXObj=new COM('RTXSAPIRootObj.RTXSAPIRootObj')or die('not found the COMOBJ');
@@ -725,6 +715,7 @@
             }   
 
             
+        
         break;
 
 
@@ -871,15 +862,13 @@
 
 
 
-               
+        
         /*  发送通知  */
         case "send_notify":
 
             header("Content-Type:text/html;charset=UTF-8");
 
             //require_once "IPLimit.php";
-
-            //获取参数，先GET方式，GET获取不到就POST方式
 
             $receiver = $_GET["receiver"];
 
@@ -1017,6 +1006,69 @@
 
 
         break;
+
+
+
+
+
+        /*  发送通知  */
+        case "send_notify2":
+
+            header("Content-Type:text/html;charset=UTF-8");
+
+            try {
+
+	            //require_once "IPLimit.php";
+
+	            $receiver = $_GET["receiver"];
+
+	            /*文本有换行符，编码传输后，需要解码*/
+	            $msg = $_GET["msg"];
+	            $msg = urldecode($msg);
+
+
+	            $title = $_GET["title"];
+
+	            $msg = iconv("utf-8","gbk", $msg);
+
+	            $title = iconv("utf-8","gbk", $title);
+
+
+	            //调用API开始发送
+
+	            //创建根对象
+	            $RTXObj=new COM('RTXSAPIRootObj.RTXSAPIRootObj')or die('not found the COMOBJ');
+	            
+	            /*发送消息给用户*/
+
+	            $RTXObj->SendNotify($receiver,$title,0,$msg);
+
+
+
+				if ($result){
+
+		            throw new Exception('error');
+
+		        }
+
+			    //api返回结果为空，自定义返回字符串
+			    $result="ok";
+			    echo $result;
+
+			    
+
+			}catch(Exception $e){
+
+			    echo iconv('GBK', 'UTF-8',$e->getMessage());
+
+			}  
+
+
+
+        break;
+
+
+
 
     }
 
