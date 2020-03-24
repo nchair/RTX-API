@@ -1070,7 +1070,7 @@
 
         case 'test':
 
-            echo 'test';
+            echo 'ok';
             break;
 
 
