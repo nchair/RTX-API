@@ -1068,6 +1068,11 @@
         break;
 
 
+        case 'test':
+
+            echo 'test';
+            break;
+
 
 
     }
